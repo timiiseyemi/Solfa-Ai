@@ -16,7 +16,7 @@ SolfaAI makes music education more approachable. Instead of asking learners to t
 
 ## Demo
 
-- **Live demo:** _Coming soon_
+- **Live demo:** _(https://solfa-ai.vercel.app/)_
 - **Demo video:** _Coming soon_
 
 ---
@@ -38,6 +38,20 @@ SolfaAI makes music education more approachable. Instead of asking learners to t
 | Music workspace | Dashboard, song library, song analysis, downloads, and progress summaries. |
 | Authentication | Supabase SSR authentication, session persistence, recovery, and route protection. |
 | Responsive polish | Premium light/dark themes, mobile navigation, loading states, and GSAP interactions. |
+
+---
+
+## Project Highlights
+
+- AI-powered music transcription
+- Automatic MusicXML generation
+- Automatic tonic sol-fa conversion
+- GPT-powered lesson generation
+- Offline lesson fallback
+- Interactive sheet music
+- Secure authenticated dashboard
+- Responsive design
+- GSAP animations
 
 ---
 
@@ -140,9 +154,9 @@ flowchart TD
 ### Install and run
 
 ```bash
-pnpm install
+npm install
 cp .env.example .env.local
-pnpm dev
+npm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
@@ -200,21 +214,32 @@ Both paths return complete structured content: an overview, difficulty explanati
 
 ## Future roadmap
 
-- [ ] Real-time transcription feedback
-- [ ] Choir and multi-part vocal support
-- [ ] Richer practice analytics
-- [ ] Teacher and classroom dashboard
-- [ ] Collaborative rehearsals
-- [ ] Pitch correction and vocal coaching tools
-- [ ] Native mobile application
+- [ ] Import songs directly from YouTube, Spotify, Apple Music, and SoundCloud using a song URL.
+- [ ] Search by song title and artist without uploading audio.
+- [ ] AI-powered song insights, including artist information, song history, lyrical background, release details, and musical context.
+- [ ] Interactive score playback with synchronized note highlighting.
+- [ ] Real-time pitch detection and vocal feedback during practice.
+- [ ] Choir and multi-part vocal transcription.
+- [ ] Teacher dashboard for classrooms and music schools.
+- [ ] Collaborative rehearsal spaces for ensembles and choirs.
+- [ ] Mobile applications for iOS and Android.
 
 ---
 
 ## Team
 
-_Add contributor names, roles, and links here._
+### Oluwatimilehin Iseyemi
+Founder & Full Stack Developer
 
----
+Designed and built SolfaAI including:
+
+- Product design
+- Frontend
+- Backend
+- AI pipeline
+- Music transcription
+- Authentication
+- Deployment
 
 ## License
 
