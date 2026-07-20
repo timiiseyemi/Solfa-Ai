@@ -1,0 +1,1 @@
+export { simplifyMelody } from './simplifyMelody'

@@ -1,0 +1,6 @@
+export { analyzeSong, toStoredSongAnalysis } from './analyzeSong'
+export { estimateComplexity } from './estimateComplexity'
+export { estimateDifficulty } from './estimateDifficulty'
+export { estimateKey } from './estimateKey'
+export { estimateTempo } from './estimateTempo'
+export { readMidiMetadata } from './midiMetadata'
