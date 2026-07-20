@@ -93,7 +93,7 @@ export function Hero() {
   }, [])
 
   return (
-    <section ref={heroRef} id="top" className="relative overflow-hidden bg-[#0a0a10] pb-14 pt-32 text-foreground sm:pb-20 sm:pt-40">
+    <section ref={heroRef} id="top" className="relative overflow-hidden bg-[#0a0a10] pb-10 pt-24 text-foreground sm:pb-14 sm:pt-28">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <div aria-hidden="true" className="hero-badge pointer-events-none absolute left-5 top-60 hidden size-28 items-center justify-center lg:flex">
           <svg viewBox="0 0 120 120" className="size-full animate-[spin_20s_linear_infinite]">
@@ -126,7 +126,7 @@ export function Hero() {
 
         <div className="hero-image-strip mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-4 lg:ml-[34%] lg:mr-0">
           {heroImages.map((src, index) => (
-            <div data-hero-image key={src} className="group relative aspect-[1.2/1] overflow-hidden rounded-2xl border border-border bg-muted shadow-sm will-change-transform">
+            <div data-hero-image key={src} className="group relative aspect-[1.2/1] overflow-hidden rounded-2xl border border-black/70 bg-muted shadow-sm will-change-transform dark:border-white/25">
               <img src={src} alt="" aria-hidden="true" className="size-full object-cover transition-transform duration-700 group-hover:scale-105" loading={index > 1 ? 'lazy' : 'eager'} />
             </div>
           ))}
@@ -134,7 +134,7 @@ export function Hero() {
 
         <div
           aria-hidden="true"
-          className="hero-wordmark mt-10 select-none text-center font-sans text-[clamp(4.8rem,15vw,16rem)] font-bold leading-[0.72] tracking-[0.006em] text-foreground sm:mt-12"
+          className="hero-wordmark font-pally relative left-1/2 mt-8 w-[calc(100vw-2rem)] -translate-x-1/2 select-none text-center text-[clamp(5rem,17.5vw,19rem)] font-extrabold leading-[0.7] tracking-[-0.045em] text-foreground sm:mt-10 sm:w-[calc(100vw-4rem)]"
         >
           <span>SOLFA</span><span className="text-[#3b82f6]">AI</span>
         </div>

@@ -31,6 +31,13 @@
   font-weight: 800;
   font-display: swap;
 }
+@font-face {
+  font-family: 'Pally';
+  src: url('/fonts/pally/pally-regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
 
 @theme inline {
   --font-sans: var(--font-line-seed), ui-sans-serif, system-ui, sans-serif;
@@ -82,6 +89,7 @@
 :root {
   /* Locally resolved first to preserve portable, offline builds. */
   --font-line-seed: "LINE Seed Sans", "LINE Seed JP", "Avenir Next", Avenir, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-pally: "Pally", "LINE Seed Sans", "Avenir Next", Avenir, sans-serif;
   color-scheme: light;
   /* accent: SolfaAI blue */
   --background: #f8fafc;
@@ -403,6 +411,12 @@ html.light .theme-on-artwork .song-processing-value {
 html.light .theme-on-artwork .song-musicxml-download {
   color: #000 !important;
 }
+html.light .ai-lesson-summary :is(.text-white, .text-white\/95, .text-white\/90, .text-white\/85, .text-white\/80, .text-white\/75, .text-white\/70, .text-white\/65, .text-white\/60, .text-white\/55, .text-white\/50, .text-blue-300) {
+  color: #fff !important;
+}
+html.light .benefits-listen-button {
+  color: #fff !important;
+}
 
 @layer utilities {
   .glass {
@@ -422,6 +436,8 @@ html.light .theme-on-artwork .song-musicxml-download {
     letter-spacing: -0.025em;
     font-feature-settings: "liga" 1;
   }
+
+  .font-pally { font-family: var(--font-pally); }
 
   .font-display em,
   .font-display i,

@@ -77,12 +77,12 @@ export function SiteFooter() {
         </div>
         <div className="relative z-20 mx-auto flex max-w-3xl flex-col items-center px-4 pb-24 pt-[26vw] text-center sm:px-6 sm:pt-80">
           <Reveal>
-            <h2 className="text-balance font-serif text-4xl leading-[1.05] tracking-tight text-black sm:text-5xl md:text-6xl">
+            <h2 className="text-balance font-serif text-4xl leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl">
               Give every voice a teacher
             </h2>
           </Reveal>
           <Reveal delay={0.05}>
-            <p className="mx-auto mt-5 max-w-md text-pretty leading-relaxed text-black/70">
+            <p className="mx-auto mt-5 max-w-md text-pretty leading-relaxed text-white/85">
               No music theory? No problem. SolfaAI handles the hard part — start free, no card
               required.
             </p>

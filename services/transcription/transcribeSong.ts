@@ -73,7 +73,15 @@ export async function transcribeSong({
 
     // MusicXML is supplementary: its own failure is persisted as notation_status
     // and must never prevent the successfully generated MIDI from being available.
-    await generateAndStoreMusicXml({ supabase, songId, userId: user.id, originalFilename, midi, simplifiedMelody })
+    await generateAndStoreMusicXml({
+      supabase,
+      songId,
+      userId: user.id,
+      originalFilename,
+      midi,
+      simplifiedMelody,
+      estimatedKey: calculatedKey,
+    })
 
     // Tonic sol-fa is derived only from the structured transcription result.
     // Like MusicXML, it is an enhancement and never changes MIDI success/failure.

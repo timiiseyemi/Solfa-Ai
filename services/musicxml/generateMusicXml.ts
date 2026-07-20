@@ -9,6 +9,7 @@ export async function generateAndStoreMusicXml({
   originalFilename,
   midi,
   simplifiedMelody,
+  estimatedKey,
 }: {
   supabase: SupabaseClient
   songId: string
@@ -16,6 +17,7 @@ export async function generateAndStoreMusicXml({
   originalFilename: string
   midi: Blob
   simplifiedMelody: TranscriptionNote[]
+  estimatedKey: string | null
 }) {
   let step = 'marking notation as generating'
   try {
@@ -29,7 +31,12 @@ export async function generateAndStoreMusicXml({
 
     // midiToMusicXml performs both Standard MIDI parsing and MusicXML serialization.
     step = 'parsing MIDI and generating MusicXML'
-    const musicXml = midiToMusicXml(midiData, originalFilename.replace(/\.[^.]+$/, ''), simplifiedMelody)
+    const musicXml = midiToMusicXml(
+      midiData,
+      originalFilename.replace(/\.[^.]+$/, ''),
+      simplifiedMelody,
+      estimatedKey,
+    )
 
     step = 'uploading MusicXML to Supabase Storage'
     const { error: uploadError } = await supabase.storage.from('songs').upload(

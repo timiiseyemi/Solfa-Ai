@@ -19,6 +19,8 @@ SolfaAI makes music education more approachable. Instead of asking learners to t
 - **Live demo:** _(https://solfa-ai.vercel.app/)_
 - **Demo video:** _Coming soon_
 
+For the quickest evaluation, sample recordings are included in `public/demo/` so judges can test the full transcription pipeline immediately.
+
 ---
 
 ## Features
@@ -55,19 +57,75 @@ SolfaAI makes music education more approachable. Instead of asking learners to t
 
 ---
 
-## Screenshots
+### 📸 Screenshots
 
-> Add project screenshots under `docs/screenshots/` and replace the placeholders below before publishing.
+### Landing Page
 
-| Landing page | Dashboard |
-| --- | --- |
-| `docs/screenshots/landing-page.png` | `docs/screenshots/dashboard.png` |
-
-| Song analysis | Sheet music | AI lesson |
-| --- | --- | --- |
-| `docs/screenshots/song-analysis.png` | `docs/screenshots/sheet-music.png` | `docs/screenshots/ai-lesson.png` |
+![Landing Page](docs/screenshots/landing-page.png)
 
 ---
+
+### Dashboard
+
+![Dashboard](docs/screenshots/dashboard.png)
+
+---
+
+### Upload & Processing
+
+![Processing](docs/screenshots/generating-page.png)
+
+---
+
+### Song Analysis
+
+![Song Analysis](docs/screenshots/result-page.png)
+
+---
+
+### Sheet Music
+
+![Sheet Music](docs/screenshots/sheet-music.png)
+
+---
+
+### AI Lesson
+
+![AI Lesson](docs/screenshots/ai-lesson.png)
+
+---
+
+### Tonic Sol-fa
+
+![Tonic Sol-fa](docs/screenshots/solfa-page.png)
+
+---
+
+## 🎵 Demo Songs
+
+To make evaluation easier, SolfaAI includes three sample recordings that can be uploaded directly into the application.
+
+### Included Samples
+
+| Song | Purpose |
+|------|---------|
+| 🎹 River Flow | Piano transcription and notation |
+| 🎼 Amazing Grace | hymn transcription |
+| 🎹 Lean on me | Solo Piano transcription |
+
+The demo recordings are located in:
+
+```text
+public/demo/
+```
+
+Simply open the app, upload any of the demo recordings, and SolfaAI will generate:
+
+- 🎼 Sheet Music (MusicXML)
+- 🎵 Tonic Sol-fa
+- 🎹 MIDI
+- 📊 Musical Analysis
+- 🤖 AI Lesson
 
 ## How it works
 

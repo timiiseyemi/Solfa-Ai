@@ -1,4 +1,5 @@
 import { Midi } from '@tonejs/midi'
+import { parseKey } from '@/lib/tonic-solfa/keyDetection'
 import type { TranscriptionNote } from '@/types/transcription'
 
 type MusicXmlNote = {
@@ -17,6 +18,7 @@ export function midiToMusicXml(
   midiData: ArrayBuffer,
   title = 'SolfaAI Transcription',
   simplifiedMelody?: readonly TranscriptionNote[],
+  estimatedKey?: string | null,
 ) {
   const midi = new Midi(midiData)
   const divisions = midi.header.ppq || 480
@@ -32,6 +34,7 @@ export function midiToMusicXml(
     : transcriptionNotesToMusicXmlNotes(simplifiedMelody, divisions, tempo)
   const ticksPerMeasure = Math.max(1, divisions * beats * (4 / beatType))
   const measures = buildMeasures(notes, ticksPerMeasure)
+  const key = musicXmlKey(estimatedKey)
 
   return `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
@@ -40,7 +43,7 @@ export function midiToMusicXml(
   <identification><encoding><software>SolfaAI</software><encoding-date>${new Date().toISOString().slice(0, 10)}</encoding-date></encoding></identification>
   <part-list><score-part id="P1"><part-name>Transcription</part-name></score-part></part-list>
   <part id="P1">
-${measures.map((measure, index) => serializeMeasure(measure, index, { divisions, beats, beatType, tempo, ticksPerMeasure })).join('\n')}
+${measures.map((measure, index) => serializeMeasure(measure, index, { divisions, beats, beatType, tempo, ticksPerMeasure, key })).join('\n')}
   </part>
 </score-partwise>`
 }
@@ -60,7 +63,7 @@ function buildMeasures(notes: MusicXmlNote[], ticksPerMeasure: number) {
   return Array.from({ length: measureCount }, (_, index) => notes.filter((note) => Math.floor(note.ticks / ticksPerMeasure) === index))
 }
 
-function serializeMeasure(notes: MusicXmlNote[], index: number, config: { divisions: number; beats: number; beatType: number; tempo: number; ticksPerMeasure: number }) {
+function serializeMeasure(notes: MusicXmlNote[], index: number, config: { divisions: number; beats: number; beatType: number; tempo: number; ticksPerMeasure: number; key: MusicXmlKey }) {
   const measureStart = index * config.ticksPerMeasure
   const byStart = new Map<number, MusicXmlNote[]>()
   notes.forEach((note) => {
@@ -74,20 +77,20 @@ function serializeMeasure(notes: MusicXmlNote[], index: number, config: { divisi
   for (const [start, group] of [...byStart.entries()].sort(([a], [b]) => a - b)) {
     if (start > cursor) contents.push(restXml(Math.min(start - cursor, measureStart + config.ticksPerMeasure - cursor), config.divisions))
     const duration = Math.min(Math.max(...group.map((note) => note.durationTicks)), measureStart + config.ticksPerMeasure - start)
-    group.forEach((note, noteIndex) => contents.push(noteXml(note, duration, noteIndex > 0, config.divisions)))
+    group.forEach((note, noteIndex) => contents.push(noteXml(note, duration, noteIndex > 0, config.divisions, config.key)))
     cursor = Math.max(cursor, start + duration)
   }
   if (cursor < measureStart + config.ticksPerMeasure) contents.push(restXml(measureStart + config.ticksPerMeasure - cursor, config.divisions))
 
   const attributes = index === 0
-    ? `<attributes><divisions>${config.divisions}</divisions><key><fifths>0</fifths></key><time><beats>${config.beats}</beats><beat-type>${config.beatType}</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes><direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>${config.tempo}</per-minute></metronome></direction-type><sound tempo="${config.tempo}"/></direction>`
+    ? `<attributes><divisions>${config.divisions}</divisions><key><fifths>${config.key.fifths}</fifths></key><time><beats>${config.beats}</beats><beat-type>${config.beatType}</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes><direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>${config.tempo}</per-minute></metronome></direction-type><sound tempo="${config.tempo}"/></direction>`
     : ''
 
   return `    <measure number="${index + 1}">${attributes}${contents.join('')}</measure>`
 }
 
-function noteXml(note: MusicXmlNote, duration: number, chord: boolean, divisions: number) {
-  const { step, alter, octave } = pitchToXml(note.midi)
+function noteXml(note: MusicXmlNote, duration: number, chord: boolean, divisions: number, key: MusicXmlKey) {
+  const { step, alter, octave } = pitchToXml(note.midi, key)
   const velocity = Math.max(1, Math.round(note.velocity * 127))
   return `<note>${chord ? '<chord/>' : ''}<pitch><step>${step}</step>${alter ? `<alter>${alter}</alter>` : ''}<octave>${octave}</octave></pitch><duration>${duration}</duration><voice>1</voice><type>${durationType(duration, divisions)}</type><velocity>${velocity}</velocity></note>`
 }
@@ -107,13 +110,59 @@ function durationType(duration: number, divisions: number) {
   return '32nd'
 }
 
-function pitchToXml(midi: number) {
+function pitchToXml(midi: number, key: MusicXmlKey) {
+  const pitchClass = ((midi % 12) + 12) % 12
+  const diatonicPitch = DIATONIC_STEPS.find((step) => (NATURAL_PITCH_CLASSES[step] + key.accidentals[step] + 12) % 12 === pitchClass)
+  if (diatonicPitch) {
+    return {
+      step: diatonicPitch,
+      alter: key.accidentals[diatonicPitch],
+      octave: Math.floor(midi / 12) - 1,
+    }
+  }
+
   const pitchClasses = [
     ['C', 0], ['C', 1], ['D', 0], ['D', 1], ['E', 0], ['F', 0],
     ['F', 1], ['G', 0], ['G', 1], ['A', 0], ['A', 1], ['B', 0],
   ] as const
-  const [step, alter] = pitchClasses[((midi % 12) + 12) % 12]
+  const [step, alter] = pitchClasses[pitchClass]
   return { step, alter, octave: Math.floor(midi / 12) - 1 }
+}
+
+type MusicXmlKey = {
+  fifths: number
+  accidentals: Record<MusicXmlStep, number>
+}
+
+type MusicXmlStep = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G'
+
+const DIATONIC_STEPS: MusicXmlStep[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+const NATURAL_PITCH_CLASSES: Record<MusicXmlStep, number> = {
+  C: 0,
+  D: 2,
+  E: 4,
+  F: 5,
+  G: 7,
+  A: 9,
+  B: 11,
+}
+const SHARP_ORDER: MusicXmlStep[] = ['F', 'C', 'G', 'D', 'A', 'E', 'B']
+const FLAT_ORDER: MusicXmlStep[] = ['B', 'E', 'A', 'D', 'G', 'C', 'F']
+const KEY_FIFTHS: Record<string, number> = {
+  'C major': 0, 'G major': 1, 'D major': 2, 'A major': 3, 'E major': 4, 'B major': 5, 'F# major': 6, 'C# major': 7,
+  'F major': -1, 'Bb major': -2, 'Eb major': -3, 'Ab major': -4, 'Db major': -5, 'Gb major': -6, 'Cb major': -7,
+  'A minor': 0, 'E minor': 1, 'B minor': 2, 'F# minor': 3, 'C# minor': 4, 'G# minor': 5, 'D# minor': 6, 'A# minor': 7,
+  'D minor': -1, 'G minor': -2, 'C minor': -3, 'F minor': -4, 'Bb minor': -5, 'Eb minor': -6, 'Ab minor': -7,
+}
+
+function musicXmlKey(estimatedKey?: string | null): MusicXmlKey {
+  const parsed = estimatedKey ? parseKey(estimatedKey, 'existing') : null
+  const label = parsed ? `${parsed.tonic} ${parsed.mode}` : 'C major'
+  const fifths = KEY_FIFTHS[label] ?? 0
+  const accidentals = Object.fromEntries(DIATONIC_STEPS.map((step) => [step, 0])) as Record<MusicXmlStep, number>
+  const order = fifths >= 0 ? SHARP_ORDER : FLAT_ORDER
+  for (const step of order.slice(0, Math.abs(fifths))) accidentals[step] = fifths >= 0 ? 1 : -1
+  return { fifths, accidentals }
 }
 
 function escapeXml(value: string) {

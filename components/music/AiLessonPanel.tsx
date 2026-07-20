@@ -59,7 +59,7 @@ export function AiLessonPanel({ songId, initialLesson, initialSource }: Props) {
 
 function LessonContent({ lesson, source }: { lesson: AiLesson; source: LessonSource }) {
   return <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }} className="space-y-4">
-    <LessonCard icon={<FlaticonMusicIcon name="ai" className="size-6" />} kicker={source === 'gpt' ? '✨ AI Personalized Lesson' : '🧠 Smart Lesson (Offline)'} title="Your learning focus" className="bg-gradient-to-br from-[#1e3a8a] via-[#172554] to-[#0b1120]">
+    <LessonCard icon={<FlaticonMusicIcon name="ai" className="size-6" />} kicker={source === 'gpt' ? '✨ AI Personalized Lesson' : '🧠 Smart Lesson (Offline)'} title="Your learning focus" className="ai-lesson-summary bg-gradient-to-br from-[#1e3a8a] via-[#172554] to-[#0b1120]">
       <p className="max-w-3xl text-sm leading-7 text-white/70 sm:text-base">{lesson.summary}</p>
     </LessonCard>
 
