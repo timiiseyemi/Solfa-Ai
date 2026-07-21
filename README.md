@@ -206,7 +206,7 @@ flowchart TD
 ### Prerequisites
 
 - Node.js 20+
-- pnpm 9+
+- npm 10+
 - A Supabase project with the existing `songs` table and private `songs` Storage bucket
 
 ### Install and run
@@ -214,7 +214,7 @@ flowchart TD
 ```bash
 npm install
 cp .env.example .env.local
-npm dev
+npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
